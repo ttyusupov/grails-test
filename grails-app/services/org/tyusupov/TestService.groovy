@@ -98,4 +98,38 @@ class TestService {
             addChildWithParentUpdateLock("P", "2")
         }
     }
+
+    void ensureTestComponentAndTicketsCreated() {
+        Component.withNewSession {
+            Component.findOrSaveByName("A", [failOnError: true])
+            Component.findOrSaveByName("B", [failOnError: true])
+            Ticket.findOrSaveByTitle("T1", [failOnError: true])
+            Ticket.findOrSaveByTitle("T2", [failOnError: true])
+        }
+    }
+
+    void dumpTestComponentsAndTicketsVersions() {
+        Component.withNewSession {
+            Component a = Component.findByName("A")
+            Component b = Component.findByName("B")
+            Ticket t1 = Ticket.findByTitle("T1")
+            log.info("${a} version: ${a.version}")
+            log.info("${b} version: ${b.version}")
+            log.info("${t1} version: ${t1.version}")
+        }
+    }
+
+    void testM2m() {
+        ensureTestComponentAndTicketsCreated()
+        dumpTestComponentsAndTicketsVersions()
+        Component.withNewSession {
+            Component.withNewTransaction {
+                Component a = Component.findByName("A")
+                Ticket t1 = Ticket.findByTitle("T1")
+                t1.addToComponents(a).save(failOnError: true, flush: true)
+                println "${t1.components}"
+            }
+        }
+        dumpTestComponentsAndTicketsVersions()
+    }
 }

@@ -88,4 +88,8 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+    info   'org.tyusupov',
+           'grails.app.services.org.tyusupov',              // services
+           'grails.app.controllers.org.tyusupov',           // controllers
+           'grails.app.domain.org.tyusupov'                 // domain classes
 }
